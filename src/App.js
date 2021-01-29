@@ -1,25 +1,36 @@
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import Modal from './components/Modal';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {
+    showModal: false,
+  };
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
+
+  render() {
+    const { showModal } = this.state;
+    return (
+      <>
+        <button className="Button" type="button" onClick={this.toggleModal}>
+          Open modal
+        </button>
+
+        {showModal && (
+          <Modal onClose={this.toggleModal}>
+            <button className="Button" type="button" onClick={this.toggleModal}>
+              Close modal
+            </button>
+            <h1>modal content</h1>
+            <img src="" alt="" />
+          </Modal>
+        )}
+      </>
+    );
+  }
 }
 
 export default App;
