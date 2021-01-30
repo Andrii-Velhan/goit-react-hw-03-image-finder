@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Modal from './components/Modal';
+import Searchbar from './components/Searchbar';
 
 class App extends Component {
   state = {
@@ -11,10 +12,16 @@ class App extends Component {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
+  handleFormSubmit = data => {
+    console.log(data);
+  };
+
   render() {
     const { showModal } = this.state;
     return (
       <>
+        <Searchbar onSubmit={this.handleFormSubmit} />
+
         <button className="Button" type="button" onClick={this.toggleModal}>
           Open modal
         </button>
