@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { ImSearch } from 'react-icons/im';
-// import { toast } from 'react-toastify';
+// import { ImSearch } from 'react-icons/im';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // import PropTypes from 'prop-types';
 // import { v4 as uuidv4 } from 'uuid';
 import './Searchbar.css';
@@ -29,8 +30,9 @@ class Searchbar extends Component {
 
     // console.log(name);
 
-    if (name === '') {
-      alert('Enter data !!!');
+    if (name.trim() === '') {
+      toast.error('Enter data !!!');
+      // alert('Enter data !!!');
     } else {
       this.props.onSubmit(name);
 
@@ -42,21 +44,25 @@ class Searchbar extends Component {
     // const { name } = this.state;
     return (
       <>
-        <form className="Searchbar" onSubmit={this.handleSubmit}>
-          <input
-            type="text"
-            name="name"
-            value={this.state.name}
-            onChange={this.handleChange}
-            // id="name"
-            className="Searchbar__input"
-          />
+        <header className="Searchbar">
+          <form className="SearchForm" onSubmit={this.handleSubmit}>
+            <button type="submit" className="SearchForm-button">
+              {/* <ImSearch style={{ marginRight: 8 }} /> */}
+              <span className="SearchForm-button-label">Search</span>
+            </button>
 
-          <button type="submit" className="Searchbar__button">
-            <ImSearch style={{ marginRight: 8 }} />
-            Search
-          </button>
-        </form>
+            <input
+              className="SearchForm-input"
+              type="text"
+              name="name"
+              autoComplete="off"
+              autoFocus
+              placeholder="Search images and photos"
+              value={this.state.name}
+              onChange={this.handleChange}
+            />
+          </form>
+        </header>
       </>
     );
   }

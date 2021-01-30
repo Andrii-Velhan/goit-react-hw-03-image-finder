@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
 import './App.css';
 import Modal from './components/Modal';
 import Searchbar from './components/Searchbar';
+import ImageGallery from './components/ImageGallery';
 
 class App extends Component {
   state = {
+    name: '',
     showModal: false,
   };
 
@@ -12,8 +15,9 @@ class App extends Component {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
-  handleFormSubmit = data => {
-    console.log(data);
+  handleFormSubmit = name => {
+    this.setState({ name });
+    // console.log('name:', name);
   };
 
   render() {
@@ -26,6 +30,8 @@ class App extends Component {
           Open modal
         </button>
 
+        <ImageGallery name={this.state.name} />
+
         {showModal && (
           <Modal onClose={this.toggleModal}>
             <button className="Button" type="button" onClick={this.toggleModal}>
@@ -35,6 +41,7 @@ class App extends Component {
             <img src="" alt="" />
           </Modal>
         )}
+        <ToastContainer autoClose={2500} />
       </>
     );
   }
