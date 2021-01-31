@@ -7,7 +7,7 @@ import ImageGallery from './components/ImageGallery';
 
 class App extends Component {
   state = {
-    name: '',
+    query: '',
     showModal: false,
   };
 
@@ -15,9 +15,9 @@ class App extends Component {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
-  handleFormSubmit = name => {
-    this.setState({ name });
-    // console.log('name:', name);
+  handleFormSubmit = query => {
+    this.setState({ query });
+    // console.log('query:', name);
   };
 
   render() {
@@ -30,7 +30,7 @@ class App extends Component {
           Open modal
         </button>
 
-        <ImageGallery name={this.state.name} />
+        <ImageGallery query={this.state.query} />
 
         {showModal && (
           <Modal onClose={this.toggleModal}>
