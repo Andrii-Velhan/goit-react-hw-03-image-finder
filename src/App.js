@@ -20,6 +20,13 @@ class App extends Component {
     // console.log('query:', name);
   };
 
+  onClickItem = (src, alt) => {
+    this.setState({
+      largeImage: { src, alt },
+    });
+    this.toggleModal();
+  };
+
   render() {
     const { showModal } = this.state;
     return (
