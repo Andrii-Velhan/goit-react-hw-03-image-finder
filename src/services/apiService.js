@@ -1,49 +1,20 @@
 const BASE_URL = `https://pixabay.com/api/`;
 const MY_KEY = `19199733-53a137615acbd00e25277177c`;
+const PER_PAGE = 12;
 
-export default class ImageApiService {
-  constructor() {
-    this.searchQuery = '';
-    this.page = 1;
-    this.per_page = 12;
-  }
+export function fetchImg(page, query) {
+  const url = `${BASE_URL}/?q=${query}&page=${page}&key=${MY_KEY}&image_type_type=photo&orientation=horizontal&per_page=${PER_PAGE}`;
 
-  async fetchArticles() {
-    const searchParams = new URLSearchParams({
-      image_type: 'photo',
-      orientation: 'horizontal',
-      q: this.searchQuery,
-      page: this.page,
-      per_page: this.per_page,
-      key: MY_KEY,
-    });
-
-    const url = `${BASE_URL}?${searchParams}`;
-
-    console.log('this from API:', this);
-
-    try {
-      const response = await fetch(url);
-      const newData = await response.json();
-
-      this.incrementPage();
-      console.log('this is hits from API:', newData.hits);
-      return newData;
-    } catch {}
-  }
-
-  incrementPage() {
-    this.page += 1;
-  }
-  resetPage() {
-    this.page = 1;
-  }
-
-  get query() {
-    return this.searchQuery;
-  }
-
-  set query(newQuery) {
-    this.searchQuery = newQuery;
-  }
+  return fetch(url).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    return Promise.reject(new Error(`Image ${query} not found!`));
+  });
 }
+
+const api = {
+  fetchImg,
+};
+
+export default api;

@@ -1,27 +1,25 @@
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import './ImageGalleryItem.css';
 
-const ImageGalleryItem = (
-  { webformatURL, tags, largeImageURL, onClickItem },
-  index,
-) => {
-  <li id={index} className="ImageGalleryItem">
-    <img
-      // item={item}
-      // onClick={this.onClickItem}
-      src={webformatURL}
-      // largeImageURL={largeImageURL}
-      alt={tags}
-      className="ImageGalleryItem-image"
-      onClick={onClickItem}
-    />
-  </li>;
-};
+function ImageGalleryItem({ id, src, alt, url, onClickItem }) {
+  return (
+    <li key={id} className="ImageGalleryItem">
+      <img
+        src={src}
+        alt={alt}
+        className="ImageGalleryItem-image"
+        onClick={() => onClickItem({ url, alt })}
+      />
+    </li>
+  );
+}
 
-// ImageGalleryItem.propTypes = {
-//   webformatURL: PropTypes.string,
-//   tags: PropTypes.string,
-//   onClickItem: PropTypes.func,
-// };
+ImageGalleryItem.propTypes = {
+  // id: PropTypes.string.isRequired,
+  src: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+  onClickItem: PropTypes.func.isRequired,
+};
 
 export default ImageGalleryItem;

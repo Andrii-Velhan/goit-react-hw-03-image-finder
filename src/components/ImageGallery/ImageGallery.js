@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
+import pixabayAPI from '../../services/apiService';
 import './ImageGallery.css';
 import { toast } from 'react-toastify';
-// import ImageGalleryItem from '../ImageGalleryItem';
+import ImageGalleryItem from '../ImageGalleryItem';
 import Loader from 'react-loader-spinner';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import Modal from '../Modal';
 import { MdClear } from 'react-icons/md';
-// import Button from '../Button';
+import Button from '../Button';
 
 const Status = {
   IDLE: 'idle',
@@ -21,45 +22,79 @@ class ImageGallery extends Component {
     error: null,
     status: Status.IDLE,
     page: 1,
+    per_page: 12,
     showModal: false,
     largeImage: {
-      src: '',
+      url: '',
       alt: '',
     },
   };
 
-  static propTypes = {};
+  static propTypes = {
+    query: PropTypes.string,
+  };
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevItem = prevProps.query;
-    const nextItem = this.props.query;
+  async componentDidUpdate(prevProps, prevState) {
+    const prevQuery = prevProps.query;
+    const nextQuery = this.props.query;
 
-    if (prevItem !== nextItem) {
+    if (prevQuery !== nextQuery) {
+      await this.reset();
       this.setState({ status: Status.PENDING });
-      fetch(
-        `https://pixabay.com/api/?q=${this.props.query}&page=${this.state.page}&key=19199733-53a137615acbd00e25277177c&image_type=photo&orientation=horizontal&per_page=12`,
-      )
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-
-          return Promise.reject(new Error(`Image ${nextItem} not found!`));
-        })
-        .then(item => this.setState({ item, status: Status.RESOLVED }))
-        .catch(error => this.setState({ error, status: Status.REJECTED }));
+      this.fetch(nextQuery);
     }
   }
+
+  fetch = nextQuery => {
+    const { page } = this.state;
+    pixabayAPI
+      .fetchImg(page, nextQuery)
+      .then(({ hits }) => {
+        if (hits.length === 0) {
+          return Promise.reject(new Error('Images not found!'));
+        }
+
+        this.setState(prevState => ({
+          item: [...prevState.item, ...hits],
+          status: Status.RESOLVED,
+        }));
+      })
+      .catch(error => this.setState({ error, status: Status.REJECTED }));
+  };
+
+  handleBtnClick = async () => {
+    const nextQuery = this.props.query;
+    await this.incrementPage();
+    this.fetch(nextQuery);
+    this.onScroll();
+  };
+
+  onScroll = () => {
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+      });
+    }, 1000);
+  };
 
   toggleModal = () => {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
-  onClickItem = (src, alt) => {
+  onClickItem = props => {
     this.setState({
-      largeImage: { src, alt },
+      largeImage: props,
     });
     this.toggleModal();
+  };
+
+  incrementPage = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
+  };
+
+  reset = () => {
+    this.setState({ page: 1, item: [], largeImage: { url: '', alt: '' } });
   };
 
   render() {
@@ -67,7 +102,7 @@ class ImageGallery extends Component {
     // const { query } = this.props;
 
     if (status === 'idle') {
-      return <div>Enter image or photo query.</div>;
+      return <></>;
     }
 
     if (status === 'pending') {
@@ -82,38 +117,24 @@ class ImageGallery extends Component {
           />
         </div>
       );
-      // <PokemonPendingView pokemonName={pokemonName} />;
     }
 
     if (status === 'rejected') {
-      // const nextItem = this.props.query;
-      // return (
-      //   <p className="">
-      //     <span className="">{nextItem}</span> is not found.
-      //   </p>
-      // );
       return toast.error(`${error.message}`);
     }
 
     if (status === 'resolved') {
       return (
         <>
-          {/* <button className="Button" type="button" onClick={this.toggleModal}>
-            Open modal
-          </button> */}
           <ul className="ImageGallery">
-            {item.hits.map(({ webformatURL, largeImageURL, tags }, index) => (
-              <li key={index} className="ImageGalleryItem">
-                <img
-                  // item={item}
-                  // onClick={this.onClickItem}
-                  src={webformatURL}
-                  // largeImageURL={largeImageURL}
-                  alt={tags}
-                  className="ImageGalleryItem-image"
-                  onClick={() => this.onClickItem(largeImageURL, tags)}
-                />
-              </li>
+            {item.map(({ id, webformatURL, largeImageURL, tags }) => (
+              <ImageGalleryItem
+                key={id}
+                src={webformatURL}
+                url={largeImageURL}
+                alt={tags}
+                onClickItem={this.onClickItem}
+              />
             ))}
           </ul>
           {showModal && (
@@ -123,13 +144,15 @@ class ImageGallery extends Component {
                 type="button"
                 onClick={this.toggleModal}
               />
-              <img src={largeImage.src} alt={largeImage.alt} />
+              <img src={largeImage.url} alt={largeImage.alt} />
             </Modal>
           )}
+          {
+            // item.length > 12 &&
+            <Button onLoadMore={this.handleBtnClick} />
+          }
         </>
       );
-
-      // <PokemonDataView pokemon={pokemon} />;
     }
   }
 }

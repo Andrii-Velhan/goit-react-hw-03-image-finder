@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
-
 import Searchbar from './components/Searchbar';
 import ImageGallery from './components/ImageGallery';
+// import Button from './components/Button';
 
 class App extends Component {
   state = {

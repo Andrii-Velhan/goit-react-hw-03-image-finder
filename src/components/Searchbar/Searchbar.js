@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import { ImSearch } from 'react-icons/im';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 // import { v4 as uuidv4 } from 'uuid';
 import './Searchbar.css';
 
@@ -13,7 +13,7 @@ class Searchbar extends Component {
   };
 
   static propTypes = {
-    //
+    onSubmit: PropTypes.func.isRequired,
   };
 
   static defaultProps = {};

@@ -15,9 +15,11 @@
   position: relative;
   max-width: calc(100vw - 48px);
   max-height: calc(100vh - 24px);
-  /* object-fit: cover; */
+  /* margin: 24px; */
+  object-fit: none;
 }
-/* .btn-close {
+
+.btn-close {
   position: absolute;
   top: 0;
   right: 0;
@@ -31,4 +33,4 @@
 .btn-close:focus {
   background-color: #303f9f;
   color: #fff;
-} */
+}
